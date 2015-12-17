@@ -14,5 +14,5 @@ php54、php56
 postgres92、postgres94
 を指定できます。
 
-Cent6なのでApacheは2.系です。
+Cent7なのでApacheは2.4系です。
 
