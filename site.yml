@@ -1,0 +1,14 @@
+---
+# This playbook deploys the whole application stack in this site.  
+
+ - name: webserver
+   hosts: webserver
+   sudo: yes
+   roles:
+     - common
+     - web
+     - mysql
+     - postgresql
+
+
+

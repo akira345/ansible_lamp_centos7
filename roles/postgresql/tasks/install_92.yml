@@ -1,0 +1,51 @@
+---
+
+ - name: Get PostgreSQL Repo
+   yum: name={{item}} state=present
+   with_items:
+     - http://yum.postgresql.org/9.2/redhat/rhel-7-x86_64/pgdg-centos92-9.2-2.noarch.rpm
+
+ - name: DisabeRepo
+   replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled=1" replace="enabled=0"
+   with_items:
+     - pgdg-92-centos.repo
+
+ - name: Install PostgreSQL9.2 Server
+   yum: name={{ item }} state=installed enablerepo=pgdg92
+   with_items:
+     - postgresql92-server
+     - postgresql92
+     - postgresql92-libs
+     - python-psycopg2
+   notify:
+     - "start and enable pgsql92 on boot"
+
+ - name: "initdb PostgreSQLl92"
+   shell: /usr/pgsql-9.2/bin/initdb -D /var/lib/pgsql/9.2/data/
+          creates=/var/lib/pgsql/9.2/data/postgresql.conf
+   sudo_user: postgres
+   sudo: yes
+
+ - name: ローカルホストからの接続を許可
+   lineinfile: dest=/var/lib/pgsql/9.2/data/postgresql.conf
+     regexp='^#?listen_addresses\s*='
+     line="listen_addresses = '127.0.0.1'"
+     state=present
+   notify: "restart pgsql92"
+
+ - name: "Start PostgreSQLl92"
+   service: name=postgresql-9.2 state=running
+
+ - include: create.yml
+
+
+ - name: pg_hba設定展開
+   template:
+     src: pg_hba.conf.j2 
+     dest: /var/lib/pgsql/9.2/pg_hba.conf
+     mode: 0600
+     owner: postgres
+     group: postgres
+   notify: "restart pgsql92"
+   tags:
+    - postgres92

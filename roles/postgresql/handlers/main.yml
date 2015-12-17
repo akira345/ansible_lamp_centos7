@@ -1,0 +1,16 @@
+---
+# Handler PostgreSQL
+
+ - name: "restart pgsql92"
+   service: name=postgresql-9.2 state=restarted
+
+ - name: "start and enable pgsql92 on boot"
+   service: name=postgresql-9.2 state=started enabled=yes
+
+ - name: "restart pgsql94"
+   service: name=postgresql-9.4 state=restarted
+
+ - name: "start and enable pgsql94 on boot"
+   service: name=postgresql-9.4 state=started enabled=yes
+
+

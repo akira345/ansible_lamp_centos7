@@ -1,0 +1,25 @@
+---
+ - name: Get MySQL Community Repo
+   yum: name={{item}} state=present
+   with_items:
+     - http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+
+ - name: Remove Mariadb-lib
+   yum: name=mariadb-libs state=absent
+
+ - name: DisabeRepo
+   replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled=1" replace="enabled=0"
+   with_items:
+     - mysql-community.repo
+
+ - name: Install MySQL5.6 Server
+   yum: name={{ item }} state=installed enablerepo=mysql56-community
+   with_items:
+     - mysql
+     - mysql-server
+     - MySQL-python
+   notify:
+     - "start and enable mysql on boot"
+
+
+ - include: settings.yml

@@ -1,0 +1,89 @@
+ - name: mysql conf setting
+   template: 
+     src: "my55.cnf.j2"
+     dest: /etc/my.cnf
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart mysql"
+   tags:
+    - mysql55
+
+ - name: mysql conf setting
+   template: 
+     src: "my56.cnf.j2"
+     dest: /etc/my.cnf
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart mysql"
+   tags:
+    - mysql56
+
+ 
+ - name: slow query log dir make
+   file:
+     path: /var/log/mysql/
+     state: directory
+     owner: mysql
+     group: mysql
+     mode: 0755
+   notify: "restart mysql"
+
+ - name: Start MySQL Server
+   service:
+     name: mysqld
+     state: running
+
+# mysql-secure-installation相当の処理
+# 以下から拝借
+# http://injustfiveminutes.com/2014/08/25/ansible-mysql_secure_installation-playbook/
+
+ - name: delete anonymous MySQL server user for {{ ansible_hostname }}
+   action: mysql_user user="" host="{{ ansible_hostname }}" state="absent" check_implicit_admin=yes login_user=root login_password='{{ mysql_root_password }}'
+ 
+ - name: delete anonymous MySQL server user for localhost
+   action: mysql_user user="" state="absent" check_implicit_admin=yes login_user=root login_password='{{ mysql_root_password }}'
+
+ - name: delete anonymous MySQL server user for {{ host_name }}
+   action: mysql_user user="root" host="{{ host_name }}" state="absent" check_implicit_admin=yes login_user=root login_password='{{ mysql_root_password }}'
+ 
+ - name: delete anonymous MySQL server user for {{ host_name }}
+   action: mysql_user user="" host="{{ host_name }}" state="absent" check_implicit_admin=yes login_user=root login_password='{{ mysql_root_password }}'
+
+
+# RootのPW変更後実行するとエラーになるので、エラーを無視するようにしている。
+ - name: remove the MySQL test database
+   action: mysql_db db=test state=absent login_user=root login_password=''
+   ignore_errors: True
+
+# 'localhost' needs to be the last item for idempotency, see
+# http://ansible.cc/docs/modules.html#mysql-user   
+ - name: Change root user password on first run
+   mysql_user: >
+     login_user=root
+     login_password='{{ mysql_root_password }}'
+     name=root
+     password={{ mysql_root_password }}
+     priv=*.*:ALL,GRANT
+     check_implicit_admin=yes
+     host={{ item }}
+   with_items:
+     - "{{ ansible_hostname }}"
+     - 127.0.0.1
+     - ::1
+     - localhost
+
+# データベース作成
+ - name: Create database
+   mysql_db: db={{ mysql_dbname }} state=present encoding=utf8 login_user=root login_password='{{ mysql_root_password }}'
+
+ - name: Create database user
+   mysql_user: 
+     name={{ mysql_dbuser }}
+     password="{{ mysql_dbpass }}"
+     priv={{ mysql_dbname }}.*:ALL
+     state=present
+     host=%
+     login_user=root
+     login_password='{{ mysql_root_password }}'

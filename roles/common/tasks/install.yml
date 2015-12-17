@@ -1,0 +1,102 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- name: yum update
+  yum: name=* state=latest
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: Install libselinux-python 
+  yum: name=libselinux-python state=present
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: Install ntp 
+  yum: name=ntp state=present
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: test to see if selinux is running
+  command: getenforce
+  register: sestatus
+  changed_when: false
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: Disable Selinux
+  sudo: yes
+  selinux: state=disabled
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: stop iptabes
+  service: name=iptables state=stopped
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+- name: Get EPEL Repo
+  yum: name={{item}} state=present
+  with_items:
+    - http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+    - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
+
+- name: DisabeRepo
+  replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled=1" replace="enabled=0"
+  with_items:
+    - epel.repo
+    - remi.repo
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94

@@ -1,0 +1,15 @@
+---
+
+mysql_root_password: adminpass
+mysql_dbname: mysqldb
+mysql_dbuser: mysqldbuser
+mysql_dbpass: dbpass
+
+pgsql_dbname: hogehogedb
+pgsql_dbuser: hogeuser
+pgsql_dbpass: hogepass
+
+document_root: /vagrant/www/html
+
+host_name: centos7.localdomain
+

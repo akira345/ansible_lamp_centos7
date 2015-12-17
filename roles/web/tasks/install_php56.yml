@@ -1,0 +1,22 @@
+---
+# These tasks install http and the php modules.
+
+ - name: Install http and php5.6 etc
+   yum: name={{ item }} state=installed enablerepo=epel,remi-php56
+   with_items:
+    - httpd
+    - php
+    - php-gd
+    - php-mysqlnd
+    - php-pgsql
+    - php-mbstring
+    - php-xml
+    - php-mcrypt
+    - mod_ssl
+    - libmcrypt
+    - python-setuptools
+   notify:
+     - "start and enable apache on boot"
+
+
+ - include: settings.yml

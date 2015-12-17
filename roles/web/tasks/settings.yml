@@ -1,0 +1,83 @@
+---
+# These tasks install http and the php modules.
+
+ - name: デフォルトのバーチャルホスト設定削除
+   file:
+     dest: /etc/httpd/conf.d/welcome.conf
+     state: absent
+   notify:
+      - "restart apache" 
+
+ - name: noindex.htmlを削除
+   file:
+     dest: /var/www/error/noindex.html
+     state: absent
+   notify:
+      - "restart apache"
+
+ - name: apache設定展開
+   template: 
+     src: httpd.conf.j2 
+     dest: /etc/httpd/conf/httpd.conf
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart apache"
+
+ - name: ssl設定展開
+   template: 
+     src: ssl.conf.j2 
+     dest: /etc/httpd/conf.d/ssl.conf
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart apache"
+
+ - name: "php.iniの修正その１"
+   lineinfile:
+     dest: /etc/php.ini
+     state: present
+     backrefs: yes
+     regexp: '{{ item.regexp }}'
+     line: '{{ item.line }}'
+   with_items:
+     - regexp: '^;date.timezone ='
+       line: 'date.timezone=Asia/Tokyo'
+     - regexp: '^;mbstring.language = Japanese'
+       line: 'mbstring.language = Japanese'
+   notify:
+     - "restart apache" 
+
+ - name: バーチャルホスト用設定展開
+   template: 
+     src: "{{ host_name }}.conf.j2"
+     dest: /etc/httpd/conf.d/{{ host_name }}.conf
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart apache"
+
+ - name: ログ出力先作成
+   file:
+     path: "/var/log/httpd/{{ host_name }}"
+     state: directory
+     owner: root
+     group: root
+     mode: 0755
+
+ - name: ログファイルローテーション設定展開
+   template: 
+     src: "{{ host_name }}_log.conf.j2"
+     dest: "/etc/logrotate.d/{{ host_name }}"
+     mode: 0644
+     owner: root
+     group: root
+   notify: "restart syslogd"
+
+ - name: DocumentRoot作成
+   file:
+     path: "{{  document_root  }}"
+     state: directory
+
+
+

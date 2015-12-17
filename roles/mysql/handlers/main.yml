@@ -1,0 +1,8 @@
+---
+# Handler MySQL
+
+ - name: "restart mysql"
+   service: name=mysqld state=restarted
+
+ - name: "start and enable mysql on boot"
+   service: name=mysqld state=started enabled=yes

@@ -1,0 +1,13 @@
+/var/log/httpd/{{ host_name }}/*log {
+	daily
+	dateext
+	rotate 7
+	copytruncate
+	missingok
+	notifempty
+	sharedscripts
+	compress
+	postrotate
+	/sbin/service httpd reload > /dev/null 2>/dev/null || true
+	endscript
+}

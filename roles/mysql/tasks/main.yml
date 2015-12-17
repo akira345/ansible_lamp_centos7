@@ -1,0 +1,4 @@
+---
+
+- include: install_55.yml  tags=mysql55
+- include: install_56.yml  tags=mysql56
