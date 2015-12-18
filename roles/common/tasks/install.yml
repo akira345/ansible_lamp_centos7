@@ -65,7 +65,7 @@
     - postgres94
 
 - name: stop iptabes
-  service: name=iptables state=stopped
+  service: name=iptables state=stopped enabled=no
   tags:
     - mysql55
     - mysql56
@@ -73,6 +73,17 @@
     - php56
     - postgres92
     - postgres94
+
+- name: stop firewalld
+  service: name=firewalld state=stopped enabled=no
+  tags:
+    - mysql55
+    - mysql56
+    - php54
+    - php56
+    - postgres92
+    - postgres94
+
 
 - name: Get EPEL Repo
   yum: name={{item}} state=present
