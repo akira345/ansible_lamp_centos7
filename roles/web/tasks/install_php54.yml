@@ -15,6 +15,9 @@
     - mod_ssl
     - libmcrypt
     - python-setuptools
+    - libcap-devel
+    - httpd-devel
+    - gcc
    notify:
      - "start and enable apache on boot"
 
