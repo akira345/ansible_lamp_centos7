@@ -11,10 +11,10 @@
 # http://d.hatena.ne.jp/hogem/20091029/1256827891
 
 #Apache2.4では、明示的に/に対するアクセス制御を書かないとアクセス不可になるようです。
-    <Location />
+    <Directory {{  document_root  }}>
       Require all granted
       Options -Indexes
-    </Location>
+    </Directory>
 
     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" T:%T D:%D I:%I O:%O" {{ host_name }}_log
     CustomLog /var/log/httpd/{{ host_name }}/access_log {{ host_name }}_log
