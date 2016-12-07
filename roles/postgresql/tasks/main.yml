@@ -2,3 +2,4 @@
 
 - include: install_92.yml  tags=postgres92
 - include: install_94.yml  tags=postgres94
+- include: install_95.yml  tags=postgres95

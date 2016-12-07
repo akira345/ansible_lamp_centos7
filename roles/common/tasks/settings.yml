@@ -8,8 +8,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
  - name: タイムゾーンをJSTにするその２
    template:
@@ -23,8 +25,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
  - name: ホスト名設定
    sudo: true
@@ -35,5 +39,7 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95

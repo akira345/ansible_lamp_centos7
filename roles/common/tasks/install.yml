@@ -8,8 +8,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: Install libselinux-python 
   yum: name=libselinux-python state=present
@@ -18,8 +20,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: Install ntp 
   yum: name=ntp state=present
@@ -28,8 +32,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: Start the ntp service
   service: name=ntpd state=started enabled=yes
@@ -38,8 +44,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: test to see if selinux is running
   command: getenforce
@@ -50,8 +58,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: Disable Selinux
   sudo: yes
@@ -61,8 +71,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: stop iptabes
   service: name=iptables state=stopped enabled=no
@@ -71,8 +83,10 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 - name: stop firewalld
   service: name=firewalld state=stopped enabled=no
@@ -81,22 +95,26 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 
 - name: Get EPEL Repo
   yum: name={{item}} state=present
   with_items:
-    - http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+    - http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
     - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
   tags:
     - mysql55
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95
 
 
 - name: DisabeRepo
@@ -109,5 +127,7 @@
     - mysql56
     - php54
     - php56
+    - php70
     - postgres92
     - postgres94
+    - postgres95

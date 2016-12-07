@@ -24,10 +24,10 @@ socket=/var/lib/mysql/mysql.sock
 symbolic-links=0
 
 # Recommended in standard MySQL setup
-#sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 # Here you can see queries with especially long duration
-log_slow_queries
+slow_query_log
 slow_query_log_file        = /var/log/mysql/slow.log
 long_query_time         = 1
 

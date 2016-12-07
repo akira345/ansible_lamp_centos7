@@ -10,11 +10,24 @@
 # Location(やその他の)ディレクティブなどについては記述順に適用される
 # http://d.hatena.ne.jp/hogem/20091029/1256827891
 
+# .htaccessはデフォ不可なので許可設定
+    <Directory {{ document_root }}>
+        AllowOverride All
+    </Directory>
+
 #Apache2.4では、明示的に/に対するアクセス制御を書かないとアクセス不可になるようです。
-    <Directory {{  document_root  }}>
+    <Directory {{ document_root }}>
       Require all granted
       Options -Indexes
     </Directory>
+
+# Adminer
+    <Directory /var/www/adminer>
+      Require all granted
+      Options -Indexes
+      AllowOverride All
+    </Directory>
+    Alias /adminer /var/www/adminer
 
     LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" T:%T D:%D I:%I O:%O" {{ host_name }}_log
     CustomLog /var/log/httpd/{{ host_name }}/access_log {{ host_name }}_log

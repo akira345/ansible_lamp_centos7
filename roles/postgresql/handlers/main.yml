@@ -14,3 +14,8 @@
    service: name=postgresql-9.4 state=started enabled=yes
 
 
+ - name: "restart pgsql95"
+   service: name=postgresql-9.5 state=restarted
+
+ - name: "start and enable pgsql95 on boot"
+   service: name=postgresql-9.5 state=started enabled=yes

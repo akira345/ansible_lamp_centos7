@@ -1,28 +1,6 @@
 ---
 # These tasks install http and the php modules.
 
- - name: mod_ruidをダウンロード
-   get_url: url="http://jaist.dl.sourceforge.net/project/mod-ruid/mod_ruid2/mod_ruid2-0.9.8.tar.bz2" sha256sum="f8a178daf3bccf86e7e50e3224efc52165200470dece7b701466c5fbf1944b19"
-            dest=/tmp/mod_ruid2-0.9.8.tar.bz2 force=True
-   register: downloaded_tarball
-
- - name: 既にバイナリが無いかチェック
-   stat: path=/usr/lib64/httpd/modules/mod_ruid2.so
-   register: st
-
- - name: コンパイルが必要かどうか？
-   set_fact:
-     need_to_build: "{{ st.stat.exists == False or st.stat.size == 0 or
-                        downloaded_tarball | changed }}"
-
- - name: ファイルを解凍
-   command: tar -xjf /tmp/mod_ruid2-0.9.8.tar.bz2 -C /usr/local/src/
-   when: need_to_build
-
- - name: compile&install mod_ruid2
-   command: apxs -a -i -l cap -c mod_ruid2.c chdir=/usr/local/src/mod_ruid2-0.9.8
-   when: need_to_build
-
  - name: デフォルトのバーチャルホスト設定削除
    file:
      dest: /etc/httpd/conf.d/welcome.conf
@@ -67,8 +45,11 @@
        line: 'date.timezone=Asia/Tokyo'
      - regexp: '^;mbstring.language = Japanese'
        line: 'mbstring.language = Japanese'
+     - regexp: '^expose_php = On'
+       line: 'expose_php = Off'
    notify:
      - "restart apache" 
+
 
  - name: バーチャルホスト用設定展開
    template: 
@@ -101,5 +82,26 @@
      path: "{{  document_root  }}"
      state: directory
 
+ - name: AdminerDirectry作成
+   file:
+     path: "/var/www/adminer"
+     state: directory
 
+ - name: InstallAdminer
+   get_url:
+     url: "https://www.adminer.org/static/download/4.2.5/adminer-4.2.5.php"
+     dest: /var/www/adminer/index.php
+     force: True
+     timeout: 60
 
+ - name: InstallAdminer
+   get_url:
+     url: "https://raw.githubusercontent.com/vrana/adminer/master/designs/nicu/adminer.css"
+     dest: /var/www/adminer/adminer.css
+     force: True
+     timeout: 60
+
+ - name: install composer
+   become: true
+   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin && mv /usr/bin/composer.phar /usr/bin/composer
+          creates=/usr/bin/composer

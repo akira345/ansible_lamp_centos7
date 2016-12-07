@@ -42,7 +42,7 @@
  - name: pg_hba設定展開
    template:
      src: pg_hba.conf.j2 
-     dest: /var/lib/pgsql/9.2/pg_hba.conf
+     dest: /var/lib/pgsql/9.2/data/pg_hba.conf
      mode: 0600
      owner: postgres
      group: postgres

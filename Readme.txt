@@ -10,8 +10,8 @@ group_vars/webserverにdocument_rootやDBの情報をセットし
 
 タグは
 mysql55、mysql56
-php54、php56
-postgres92、postgres94
+php54、php56、php70
+postgres92、postgres94、postgres95
 を指定できます。
 
 Cent7なのでApacheは2.4系です。

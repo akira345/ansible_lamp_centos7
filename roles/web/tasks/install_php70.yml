@@ -1,0 +1,37 @@
+---
+# These tasks install http and the php modules.
+
+ - name: Install http and php7.0 etc
+   yum: name={{ item }} state=installed enablerepo=epel,remi-php70
+   with_items:
+    - httpd
+    - php
+    - php-gd
+    - php-mysqlnd
+    - php-pgsql
+    - php-mbstring
+    - php-xml
+    - php-mcrypt
+    - php-devel
+    - php-pear
+    - php-zip
+    - php-opcache
+    - mod_ssl
+    - libmcrypt
+    - python-setuptools
+   notify:
+     - "start and enable apache on boot"
+
+ - include: settings.yml
+
+ - name: "php.iniにOpCacheの設定"
+   lineinfile:
+     dest: /etc/php.ini
+     line: '{{ item }}'
+   with_items:
+    - 'opcache.revalidate_freq=0'
+    - 'opcache.fast_shutdown=1'
+    - 'opcache.enable_file_override=1'
+   notify:
+     - "restart apache" 
+

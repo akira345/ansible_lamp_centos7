@@ -1,6 +1,7 @@
 ---
 - include: install_php54.yml  tags=php54
 - include: install_php56.yml  tags=php56
+- include: install_php70.yml  tags=php70
 
 
 

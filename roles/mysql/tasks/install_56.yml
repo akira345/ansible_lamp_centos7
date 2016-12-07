@@ -2,7 +2,7 @@
  - name: Get MySQL Community Repo
    yum: name={{item}} state=present
    with_items:
-     - http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+     - http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 
  - name: Remove Mariadb-lib
    yum: name=mariadb-libs state=absent

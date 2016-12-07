@@ -1,0 +1,54 @@
+---
+ - name: Get PostgreSQL Repo
+   yum: name={{item}} state=present
+   with_items:
+     - http://yum.postgresql.org/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-2.noarch.rpm
+
+ - name: DisabeRepo
+   replace: dest=/etc/yum.repos.d/{{item}} regexp="enabled=1" replace="enabled=0"
+   with_items:
+     - pgdg-95-centos.repo
+
+ - name: Install PostgreSQL9.5 Server
+   yum: name={{ item }} state=installed enablerepo=pgdg95
+   with_items:
+     - postgresql95-server
+     - postgresql95
+     - postgresql95-libs
+     - python-psycopg2
+   notify:
+     - "start and enable pgsql95 on boot"
+
+ - name: "initdb PostgreSQLl95"
+   shell: /usr/pgsql-9.5/bin/initdb -D /var/lib/pgsql/9.5/data/
+          creates=/var/lib/pgsql/9.5/data/postgresql.conf
+   sudo_user: postgres
+   sudo: yes
+
+ - name: サービス自動起動が登録されないことがあるので念のため
+   service: name=postgresql-9.5 state=started enabled=yes
+
+ - name: ローカルホストからの接続を許可95
+   lineinfile: dest=/var/lib/pgsql/9.5/data/postgresql.conf
+     regexp='^#?listen_addresses\s*='
+     line="listen_addresses = '127.0.0.1'"
+     state=present
+   notify: "restart pgsql95"
+
+ - name: "Start PostgreSQLl95"
+   service: name=postgresql-9.5 state=running
+
+ - include: create.yml
+
+
+ - name: pg_hba設定展開
+   template:
+     src: pg_hba.conf.j2 
+     dest: /var/lib/pgsql/9.5/data/pg_hba.conf
+     mode: 0600
+     owner: postgres
+     group: postgres
+   notify: "restart pgsql95"
+   tags:
+    - postgres95
+
